@@ -83,18 +83,8 @@ export default class TransactionScreen extends Component {
          // ToastAndroid.show("Book issued to the student!", ToastAndroid.SHORT);
 
            Alert.alert("Book issued to the student!");
-        } else {
-          var { bookName, studentName } = this.state;
-          this.initiateBookReturn(bookId, studentId, bookName, studentName);
-
-          // For Android users only
-       /*   ToastAndroid.show(
-            "Book returned to the library!",
-            ToastAndroid.SHORT
-          );*/
-
-          Alert.alert("Book returned to the library!");
-        }
+        } 
+      
       });
   };
 
@@ -156,35 +146,6 @@ export default class TransactionScreen extends Component {
     });
   };
 
-  initiateBookReturn = async (bookId, studentId, bookName, studentName) => {
-    //add a transaction
-    db.collection("transactions").add({
-      student_id: studentId,
-      student_name: studentName,
-      book_id: bookId,
-      book_name: bookName,
-      date: firebase.firestore.Timestamp.now().toDate(),
-      transaction_type: "return"
-    });
-    //change book status
-    db.collection("books")
-      .doc(bookId)
-      .update({
-        is_book_available: true
-      });
-    //change number  of issued books for student
-    db.collection("students")
-      .doc(studentId)
-      .update({
-        number_of_books_issued: firebase.firestore.FieldValue.increment(-1)
-      });
-
-    // Updating local state
-    this.setState({
-      bookId: "",
-      studentId: ""
-    });
-  };
 
   render() {
     const { bookId, studentId, domState, scanned } = this.state;
